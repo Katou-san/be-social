@@ -7,5 +7,5 @@ export class LoginDto {
     Email: string
 
     @IsNotEmpty()
-    User_Pass: string
+    Pass: string
 }

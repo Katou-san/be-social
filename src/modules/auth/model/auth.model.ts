@@ -3,3 +3,4 @@ export interface authType {
     User_Name: string
     Email: string
 }
+

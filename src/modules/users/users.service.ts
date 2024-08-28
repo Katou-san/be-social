@@ -11,8 +11,6 @@ import { convertNullData } from 'src/utils/convert';
 @Injectable({})
 export class UserService {
     constructor(@InjectModel(User.name) private userModel: Model<User>) { }
-
-
     async find_Email(Email: string) {
         const user = await this.userModel.findOne({
             Email: Email.toLowerCase().trim(),

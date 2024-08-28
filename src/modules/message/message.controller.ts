@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, UploadedFiles, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Query, UploadedFiles, UseInterceptors } from "@nestjs/common";
 import { FilesInterceptor } from "@nestjs/platform-express";
 import { handlePath } from "src/configs/multerConfig/multerPath";
 import { HttpStatus } from "src/configs/responeConfig/responeStatus";
@@ -17,11 +17,14 @@ export class MessController {
 
     @Get(':id')
     @Public()
-    async GetMess(@Param('id') id: string) {
+    async GetMess(
+        @Param('id') id: string,
+        @Query() query: string,
+        @Query('current') current: string,
+        @Query('limit') limit: string,
+    ) {
         try {
-            console.log(id)
-            console.log('hello')
-            return await this.messService.getMess(id)
+            return await this.messService.getMess(query, +current, +limit)
         } catch (error) {
             console.log('>> Error updating User')
             console.error(error);
@@ -31,8 +34,9 @@ export class MessController {
                 error: error,
             });
         }
-
     }
+
+
 
     @Post()
     @UseInterceptors(FilesInterceptor('files', 10, {

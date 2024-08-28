@@ -9,6 +9,7 @@ import { User } from "src/modules/users/schemas/users.schema";
 import { createId } from "src/utils/createId";
 import { responeData } from "src/utils/responeData";
 import { authType } from 'src/modules/auth/model/auth.model';
+import aqp from 'api-query-params';
 
 @Injectable({})
 
@@ -20,11 +21,26 @@ export class MessService {
         private MediaService: MediaService
     ) { }
 
-    async getMess(id: string) {
+    async getMess(query: string, current: number, limit: number) {
         try {
+            const { filter, sort } = aqp(query)
+            if (filter.current) delete filter.current
+            if (filter.limit) delete filter.limit
+
+            if (!current) current = 1
+            if (!limit) limit = 10
+
+            const totalItems = (await this.MessModel.find(filter)).length
+            const totalPage = Math.ceil(totalItems / limit)
+            const skip = (current - 1) * limit
+            const result = await this.MessModel
+                .find(filter)
+                .limit(limit)
+                .skip(skip)
+                .sort(sort as any)
             return responeData({
                 message: 'get Contact successfully!',
-                data: id
+                data: result
             })
         } catch (error) {
             return responeData({

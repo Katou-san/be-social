@@ -9,13 +9,11 @@ import { authService } from 'src/modules/auth/auth.service';
 import { JwtAuthGuard } from 'src/modules/auth/passport/jwt-auth.guard';
 import { JwtStrategy } from 'src/modules/auth/passport/jwt.strategy';
 import { LocalStrategy } from 'src/modules/auth/passport/local.strategy';
-import { ContactModule } from 'src/modules/contact/contact.module';
 import { User, UserSchema } from 'src/modules/users/schemas/users.schema';
 import { UserModule } from 'src/modules/users/users.module';
 
 @Module({
     imports: [
-        ContactModule,
         UserModule,
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
         JwtModule.registerAsync({

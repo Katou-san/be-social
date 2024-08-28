@@ -4,36 +4,17 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { HttpStatus } from "src/configs/responeConfig/responeStatus";
 import { CheckPassword, HashPassword } from "src/middlewares/hash";
+import { LoginDto } from "src/modules/auth/dots/login.dto";
 import { RegisterDto } from "src/modules/auth/dots/register.dto";
-import { ContactService } from "src/modules/contact/contact.service";
 import { User } from "src/modules/users/schemas/users.schema";
 import { UserService } from "src/modules/users/users.service";
 import { createId } from "src/utils/createId";
 import { responeData } from "src/utils/responeData";
 
-type LoginType = {
-    _id?: string
-    User_Id?: string
-    Nickname?: string
-    Email?: string
-    Phone?: string
-    User_Name?: string
-    Pass?: string
-    Avartar?: string
-    is_Admin?: boolean
-    is_Premium?: boolean
-    Role_Id?: string
-    Create_Day?: string
-    Color?: string
-    Status?: number
-}
-
-
 @Injectable()
 export class authService {
     constructor(
         @InjectModel(User.name) private userModel: Model<User>,
-        private contactService: ContactService,
         private userService: UserService,
         private jwtService: JwtService
     ) { }
@@ -56,23 +37,33 @@ export class authService {
 
     }
 
-    async login(user: LoginType): Promise<any> {
+    async login(user: LoginDto): Promise<any> {
         try {
-            if (!await this.userService.find_Email(user.Email || '')) {
+            const checkEmail = await this.userService.find_Email(user.Email || '')
+            if (!checkEmail) {
                 return responeData({
                     statusCode: HttpStatus.ERROR,
                     message: 'login Fail!',
                     error: { email: 'Not found email' }
                 });
             }
-            const payload = { ID: user.User_Id, Name: user.User_Name, Email: user.Email }
+
+            if (!await CheckPassword({ hashPass: checkEmail.Pass, pass: String(user.Pass).trim() })) {
+                return responeData({
+                    statusCode: HttpStatus.ERROR,
+                    message: 'Pass not macth!',
+                    error: { pass: 'Pass not macth' }
+                });
+            }
+
+            const payload = { ID: checkEmail.User_Id, Name: checkEmail.User_Name, Email: checkEmail.Email }
             return responeData({
                 statusCode: HttpStatus.SUCCESS,
                 message: 'login Success!',
                 data: {
-                    User_Id: user.User_Id,
-                    User_Name: user.User_Name,
-                    Nickname: user.Nickname,
+                    User_Id: checkEmail.User_Id,
+                    User_Name: checkEmail.User_Name,
+                    Nickname: checkEmail.Nickname,
                     accessToken: await this.jwtService.signAsync(payload)
                 }
             });
@@ -107,13 +98,13 @@ export class authService {
                 Role_Id: 's',
             });
 
-            if (!await this.contactService.createContact(result.User_Id)) {
-                await this.userModel.deleteOne({ User_Id: result.User_Id });
-                return responeData({
-                    statusCode: HttpStatus.ERROR,
-                    message: 'create contact fail!',
-                });
-            }
+            // if (!await this.contactService.createContact(result.User_Id)) {
+            //     await this.userModel.deleteOne({ User_Id: result.User_Id });
+            //     return responeData({
+            //         statusCode: HttpStatus.ERROR,
+            //         message: 'create contact fail!',
+            //     });
+            // }
 
 
             const payload = { ID: result.User_Id, Name: result.User_Name, Email: result.Email }

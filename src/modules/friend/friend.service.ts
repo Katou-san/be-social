@@ -33,6 +33,7 @@ export class FriendService {
             });
         }
     }
+
     async createFriend(userId: string, friend_Id: string) {
         try {
 

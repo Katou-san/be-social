@@ -3,11 +3,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MulterModule } from '@nestjs/platform-express';
 import { AuthModule } from 'src/modules/auth/auth.module';
-import { ContactModule } from 'src/modules/contact/contact.module';
 import { FriendModule } from 'src/modules/friend/friend.module';
 import { MessageModule } from 'src/modules/message/message.module';
-import { userChatModule } from 'src/modules/userchat/userchat.module';
 import { UserModule } from 'src/modules/users/users.module';
+import { ConversationModule } from './modules/conversation/conversation.module';
 
 @Module({
   imports: [
@@ -20,11 +19,10 @@ import { UserModule } from 'src/modules/users/users.module';
     }),
     MulterModule.register({}),
     FriendModule,
-    ContactModule,
-    userChatModule,
     MessageModule,
     UserModule,
-    AuthModule
+    AuthModule,
+    ConversationModule
   ],
   controllers: [],
   providers: [],

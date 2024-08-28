@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 
-@Injectable({})
+@Injectable()
 
-export class userChatService {
+export class userGroupService {
 
 }
