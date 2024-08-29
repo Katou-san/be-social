@@ -2,7 +2,6 @@ import { MediaService } from 'src/modules/media/media.service';
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { Contact } from "src/modules/contact/schemas/contact.schema";
 import { createMessDtos } from "src/modules/message/dtos/createMess.sto";
 import { Message } from "src/modules/message/schemas/message.schema";
 import { User } from "src/modules/users/schemas/users.schema";
@@ -16,8 +15,7 @@ import aqp from 'api-query-params';
 export class MessService {
     constructor(
         @InjectModel(Message.name) private MessModel: Model<Message>,
-        @InjectModel(Contact.name) private ContactModel: Model<Contact>,
-        @InjectModel(Contact.name) private UserModel: Model<User>,
+        @InjectModel(User.name) private UserModel: Model<User>,
         private MediaService: MediaService
     ) { }
 

@@ -1,3 +1,4 @@
+
 import { UserService } from './../users/users.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from "@nestjs/common";
@@ -5,12 +6,15 @@ import { Friend } from 'src/modules/friend/schemas/friend.schema';
 import { Model } from 'mongoose';
 import { responeData } from 'src/utils/responeData';
 import { HttpStatus } from 'src/configs/responeConfig/responeStatus';
+import { ConversationService } from 'src/modules/conversation/conversation.service';
+import { authType } from 'src/modules/auth/model/auth.model';
 
 @Injectable({})
 
 export class FriendService {
     constructor(
         @InjectModel(Friend.name) private friendModel: Model<Friend>,
+        private ConversationService: ConversationService,
         private UserService: UserService
     ) { }
 
@@ -34,10 +38,10 @@ export class FriendService {
         }
     }
 
-    async createFriend(userId: string, friend_Id: string) {
+    async createFriend(user: authType, friend_Id: string) {
         try {
 
-            if (userId == friend_Id) {
+            if (user.Id == friend_Id) {
                 return responeData({
                     statusCode: HttpStatus.ERROR,
                     message: 'Cant add',
@@ -53,8 +57,8 @@ export class FriendService {
                 });
             }
 
-            const resultUser = await this.friendModel.find({ User_Id: userId, Friend_Id: friend_Id })
-            const resultFriend = await this.friendModel.find({ Friend_Id: userId, User_Id: friend_Id })
+            const resultUser = await this.friendModel.find({ User_Id: user.Id, Friend_Id: friend_Id })
+            const resultFriend = await this.friendModel.find({ Friend_Id: user.Id, User_Id: friend_Id })
             if (resultUser.length > 0 || resultFriend.length > 0) {
                 return responeData({
                     statusCode: HttpStatus.ERROR,
@@ -63,7 +67,7 @@ export class FriendService {
                 });
             }
 
-            const result = await this.friendModel.create({ User_Id: userId, Friend_Id: friend_Id });
+            const result = await this.friendModel.create({ User_Id: user.Id, Friend_Id: friend_Id });
             if (!result) {
                 return responeData({
                     statusCode: HttpStatus.ERROR,
@@ -71,9 +75,12 @@ export class FriendService {
                     error: { friend: 'add friend faild!' }
                 });
             }
+
+            const createConversation = await this.ConversationService.create_Conversation__SV(user, friend_Id)
             return responeData({
                 statusCode: HttpStatus.SUCCESS,
                 message: 'Add friend success!',
+                error: createConversation ? {} : { createFriend: "failed to create conversation" },
                 data: result
             });
 

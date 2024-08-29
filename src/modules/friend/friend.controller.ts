@@ -47,7 +47,7 @@ export class FriendController {
                 });
             }
 
-            return this.FriendService.createFriend(userInfo.Id, friendId)
+            return this.FriendService.createFriend(userInfo, friendId)
 
         } catch (error) {
             console.error('>> Error create friend');

@@ -1,11 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, UploadedFiles, UseInterceptors } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Query, UploadedFiles, UseInterceptors } from "@nestjs/common";
 import { FilesInterceptor } from "@nestjs/platform-express";
 import { handlePath } from "src/configs/multerConfig/multerPath";
 import { HttpStatus } from "src/configs/responeConfig/responeStatus";
 import { authInfo } from "src/customs/auth";
 import { Public } from "src/customs/customize";
 import { authType } from "src/modules/auth/model/auth.model";
-import { deleteContactDto } from "src/modules/contact/dtos/deleteContact.dto";
 import { createMessDtos } from "src/modules/message/dtos/createMess.sto";
 import { MessService } from "src/modules/message/message.service";
 import { responeData } from "src/utils/responeData";
@@ -15,10 +14,10 @@ export class MessController {
 
     constructor(private readonly messService: MessService) { }
 
-    @Get(':id')
+    @Get(':topic')
     @Public()
     async GetMess(
-        @Param('id') id: string,
+        @Param('topic') topic: string,
         @Query() query: string,
         @Query('current') current: string,
         @Query('limit') limit: string,
@@ -26,11 +25,11 @@ export class MessController {
         try {
             return await this.messService.getMess(query, +current, +limit)
         } catch (error) {
-            console.log('>> Error updating User')
+            console.log('>>  Error get mess')
             console.error(error);
             return responeData({
                 statusCode: HttpStatus.ERROR,
-                message: 'update user fail!',
+                message: 'get mess fail!',
                 error: error,
             });
         }
@@ -56,18 +55,14 @@ export class MessController {
 
             return await this.messService.createMess(files, userInfo, body)
         } catch (error) {
-            console.log('>> Error updating User')
+            console.log('>> Error create mess')
             console.error(error);
             return responeData({
                 statusCode: HttpStatus.ERROR,
-                message: 'update user fail!',
+                message: 'create mess fail!',
                 error: error,
             });
         }
     }
 
-    @Delete(':id')
-    DeleteChat(@Param(':id') id: deleteContactDto) {
-        return id
-    }
 }

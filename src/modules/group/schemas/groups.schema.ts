@@ -22,5 +22,5 @@ export class Group {
     Post_Time: string
 
 }
-export type UserDocument = HydratedDocument<Group>
-export const UserSchema = SchemaFactory.createForClass(Group)
+export type GroupDocument = HydratedDocument<Group>
+export const GroupSchema = SchemaFactory.createForClass(Group)

@@ -7,6 +7,7 @@ import { FriendModule } from 'src/modules/friend/friend.module';
 import { MessageModule } from 'src/modules/message/message.module';
 import { UserModule } from 'src/modules/users/users.module';
 import { ConversationModule } from './modules/conversation/conversation.module';
+import { GroupModule } from 'src/modules/group/group.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ConversationModule } from './modules/conversation/conversation.module';
     MessageModule,
     UserModule,
     AuthModule,
+    GroupModule,
     ConversationModule
   ],
   controllers: [],

@@ -7,6 +7,7 @@ import { Conversation, ConversationSchema } from 'src/modules/conversation/schem
 @Module({
   imports: [MongooseModule.forFeature([{ name: Conversation.name, schema: ConversationSchema }])],
   controllers: [ConversationController],
-  providers: [ConversationService]
+  providers: [ConversationService],
+  exports: [ConversationService]
 })
 export class ConversationModule { }
