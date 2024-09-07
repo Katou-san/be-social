@@ -38,10 +38,10 @@ export class MessController {
 
 
     @Post()
-    @UseInterceptors(FilesInterceptor('files', 10, {
+    @UseInterceptors(FilesInterceptor('Files', 10, {
         storage: handlePath({ folder_name: 'message' })
     }))
-    async uploadFile(@UploadedFiles() files: Array<Express.Multer.File>, @authInfo() userInfo: authType, @Body() body: createMessDtos) {
+    async uploadFile(@UploadedFiles() Files: Array<Express.Multer.File>, @authInfo() userInfo: authType, @Body() body: createMessDtos) {
         try {
             if (body.Type != 0 && body.Type != 1 && body.Type != 2) {
                 return responeData({
@@ -53,7 +53,7 @@ export class MessController {
                 });
             }
 
-            return await this.messService.createMess(files, userInfo, body)
+            return await this.messService.createMess(Files, userInfo, body)
         } catch (error) {
             console.log('>> Error create mess')
             console.error(error);

@@ -4,7 +4,7 @@ import { IsNotEmpty } from "class-validator";
 export class createMessDtos {
 
     Content?: string
-
+    Files?: any
     @IsNotEmpty()
     Type: number
 
